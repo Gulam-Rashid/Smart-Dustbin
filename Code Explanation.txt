@@ -1,0 +1,130 @@
+📖 Code Explanation (Line by Line)
+1. Include Servo Library
+#include <Servo.h>
+
+This library allows Arduino to control the servo motor.
+
+2. Create Servo Object
+Servo lidServo;
+
+Creates a servo object named lidServo.
+
+3. Pin Definitions
+const int trigPin = 9;
+const int echoPin = 10;
+const int servoPin = 6;
+Component	Arduino Pin
+HC-SR04 TRIG	D9
+HC-SR04 ECHO	D10
+Servo Signal	D6
+4. Variables
+long duration;
+int distance;
+duration → Time taken by ultrasonic pulse.
+distance → Calculated distance in centimeters.
+5. Opening Distance
+const int openDistance = 20;
+
+If the hand is within 20 cm, the lid opens.
+
+You can change it to:
+
+10
+15
+25
+30
+
+according to your requirement.
+
+6. setup()
+
+Runs only once.
+
+Serial.begin(9600);
+
+Starts Serial Monitor.
+
+pinMode(trigPin, OUTPUT);
+
+TRIG pin sends ultrasonic pulse.
+
+pinMode(echoPin, INPUT);
+
+ECHO pin receives reflected pulse.
+
+lidServo.attach(6);
+
+Connects the servo to pin D6.
+
+lidServo.write(0);
+
+Keeps the lid closed initially.
+
+7. Send Ultrasonic Pulse
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+
+digitalWrite(trigPin, LOW);
+
+This sends a 10-microsecond ultrasonic pulse.
+
+8. Measure Echo
+duration = pulseIn(echoPin, HIGH);
+
+Measures the time for the echo to return.
+
+9. Calculate Distance
+distance = duration * 0.0343 / 2;
+Speed of sound = 0.0343 cm/µs
+Divide by 2 because the sound travels to the object and back.
+10. Display Distance
+Serial.print(distance);
+
+Shows the measured distance in the Serial Monitor.
+
+Example:
+
+Distance: 18 cm
+Distance: 32 cm
+Distance: 7 cm
+11. Open the Lid
+if(distance <= 20)
+
+If an object is within 20 cm:
+
+lidServo.write(90);
+
+Opens the lid.
+
+delay(5000);
+
+Keeps it open for 5 seconds.
+
+lidServo.write(0);
+
+Closes the lid.
+
+📋 Expected Working
+Hand comes near sensor
+        │
+        ▼
+HC-SR04 measures distance
+        │
+        ▼
+Distance ≤ 20 cm ?
+      │
+ ┌────┴────┐
+ │         │
+Yes        No
+ │         │
+ ▼         ▼
+Open Lid   Keep Closed
+ │
+ ▼
+Wait 5 Seconds
+ │
+ ▼
+Close Lid
